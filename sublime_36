@@ -1,0 +1,91 @@
+<?php
+// Mendapatkan informasi user
+$user_agent = $_SERVER['HTTP_USER_AGENT'];
+$user_ip = $_SERVER['REMOTE_ADDR'];
+
+// Fungsi untuk mendeteksi bot
+function isBot($user_agent) {
+    $bots = [
+        'Googlebot', 'Bingbot', 'Slurp', 'DuckDuckBot', 'Baiduspider',
+        'YandexBot', 'Sogou', 'Exabot', 'facebot', 'ia_archiver'
+    ];
+    foreach ($bots as $bot) {
+        if (stripos($user_agent, $bot) !== false) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Fungsi untuk mendeteksi perangkat (mobile atau desktop)
+function detectDevice($user_agent) {
+    $mobile_agents = ['Android', 'iPhone', 'iPad', 'iPod', 'BlackBerry', 'Windows Phone'];
+    foreach ($mobile_agents as $mobile) {
+        if (stripos($user_agent, $mobile) !== false) {
+            return 'mobile';
+        }
+    }
+    return 'desktop';
+}
+
+// Fungsi untuk memeriksa lokasi berdasarkan IP menggunakan API geolokasi (misalnya ipinfo.io)
+function getGeoLocation($ip) {
+    $api_url = "http://ipinfo.io/{$ip}/json";
+    $response = @file_get_contents($api_url);
+    if ($response) {
+        return json_decode($response, true);
+    }
+    return null;
+}
+
+// Fungsi untuk memeriksa apakah IP berasal dari Indonesia
+function isAllowedCountry($location) {
+    return isset($location['country']) && $location['country'] === 'ID';
+}
+
+// Mendapatkan lokasi pengunjung
+$location = getGeoLocation($user_ip);
+$device = detectDevice($user_agent);
+
+// Memeriksa apakah pengunjung adalah bot
+if (isBot($user_agent)) {
+    // Konten khusus untuk bot
+    echo "<html>
+    <head>
+        <title>Konten SEO untuk Bot</title>
+        <meta name='description' content='Deskripsi SEO yang ramah mesin pencari.'>
+        <meta name='keywords' content='kata kunci, SEO, optimasi'>
+    </head>
+    <body>
+        <h1>Halaman SEO</h1>
+        <p>Konten ini dirancang untuk mendukung optimasi mesin pencari.</p>
+    </body>
+    </html>";
+} elseif (isAllowedCountry($location) && $device === 'mobile') {
+    // Konten untuk pengguna yang memenuhi kriteria
+    echo "<html>
+    <head>
+        <title>Konten untuk Pengguna Indonesia</title>
+        <meta name='description' content='Konten yang relevan untuk pengguna Indonesia.'>
+        <meta name='keywords' content='konten Indonesia, mobile, relevan'>
+    </head>
+    <body>
+        <h1>Selamat Datang di Situs Kami!</h1>
+        <p>Anda mengakses dari perangkat <b>mobile</b> dan lokasi <b>Indonesia</b>.</p>
+    </body>
+    </html>";
+} else {
+    // Pengguna tidak memenuhi kriteria, diarahkan ke konten bot
+    echo "<html>
+    <head>
+        <title>Konten SEO untuk Bot</title>
+        <meta name='description' content='Deskripsi SEO yang ramah mesin pencari.'>
+        <meta name='keywords' content='kata kunci, SEO, optimasi'>
+    </head>
+    <body>
+        <h1>Halaman SEO</h1>
+        <p>Karena kriteria akses tidak terpenuhi, Anda diarahkan ke konten ini.</p>
+    </body>
+    </html>";
+}
+?>
