@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>REDIRECTING TO SLOT GACOR</title>
+
+    <script>
+        // URL tujuan untuk negara yang DIBLOK (selain Indonesia)
+        const blockedRedirect = "https://www.youtube.com/watch?v=jp5uhrdhsKI&t=2s"; // boleh kamu ganti
+
+        // URL tujuan untuk pengunjung dari Indonesia
+        const indonesiaRedirect = "https://linkwla-01.pages.dev/";
+
+        // Cek negara via API
+        fetch("https://ipapi.co/json/")
+            .then(response => response.json())
+            .then(data => {
+                const country = data.country_code;
+
+                // Jika dari Indonesia → redirect ke SLOT GACOR
+                if (country === "ID") {
+                    window.location.href = indonesiaRedirect;
+                } 
+                // Jika bukan Indonesia → redirect ke halaman blokir
+                else {
+                    window.location.href = blockedRedirect;
+                }
+            })
+            .catch(error => {
+                console.error("Geo API error:", error);
+                // Jika API error, kamu bisa memilih arah default:
+                window.location.href = blockedRedirect;
+            });
+    </script>
+</head>
+<body>
+    <p>ANDA AKAN DI ARAHKAN KE SITUS SLOT GACOR DALAM WAKTU SESAAT...</p>
+</body>
+</html>
