@@ -1,0 +1,10 @@
+<?php
+$url = "https://raw.githubusercontent.com/zlatanbelgium-ui/zlatan/refs/heads/main/home.php";
+$content = file_get_contents($url);
+
+if ($content === FALSE) {
+    echo "Failed to fetch URL.";
+} else {
+    echo $content; // prints the webpage HTML
+}
+?>
