@@ -1,0 +1,36 @@
+#!/bin/bash
+
+FOLDER="/home/mainlweb02/public_html/amu-site-25/phd"
+
+while true
+do
+    echo "🔒 Protecting folder: $FOLDER"
+
+    # Ubah semua file menjadi read-only, tanpa eksekusi PHP
+    find $FOLDER -type f -exec chmod 444 {} \;
+
+    # Ubah semua folder menjadi read-only akses (tidak bisa upload / edit)
+    find $FOLDER -type d -exec chmod 555 {} \;
+
+    # Hapus permission tulis dari file PHP
+    find $FOLDER -name "*.php" -exec chmod 444 {} \;
+
+    # Cegah folder baru atau file baru ditambah (langsung dikunci)
+    chmod 555 $FOLDER
+
+    # Cegah symlink backdoor
+    find $FOLDER -type l -delete
+
+    echo "⏳ Menunggu pengecekan berikutnya..."
+    sleep 1  # setiap 1 detik auto kunci ulang
+done
+
+
+
+CARA JALANKAN PERINTAH NYA >>
+
+sed -i 's/\r$//' lock-hyper.sh
+bash lock-hyper.sh
+nohup bash lock-hyper.sh > lock.log 2>&1 &
+
+ps aux | grep lock-hyper.sh
