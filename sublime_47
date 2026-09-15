@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple HTML Crawler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, button {
+            padding: 8px;
+            font-size: 14px;
+        }
+        ul {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Simple Web Crawler (HTML + JS)</h2>
+
+<input type="text" id="url" value="https://www.exrg.it/company/" size="50">
+<button onclick="startCrawl()">Crawl</button>
+
+<ul id="result"></ul>
+
+<script>
+async function startCrawl() {
+    const url = document.getElementById("url").value;
+    const result = document.getElementById("result");
+    result.innerHTML = "<li>Loading...</li>";
+
+    try {
+        const response = await fetch(url);
+        const html = await response.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, "text/html");
+
+        const links = doc.querySelectorAll("a");
+        result.innerHTML = "";
+
+        links.forEach(link => {
+            const href = link.getAttribute("href");
+            if (href && !href.startsWith("#")) {
+                const li = document.createElement("li");
+                li.textContent = href;
+                result.appendChild(li);
+            }
+        });
+
+    } catch (error) {
+        result.innerHTML = "<li>Gagal crawling (CORS / Network Error)</li>";
+        console.error(error);
+    }
+}
+</script>
+
+</body>
+</html>
