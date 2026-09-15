@@ -1,0 +1,82 @@
+<?php
+
+// Fungsi untuk melakukan crawling
+function crawl($url) {
+    // Memulai cURL
+    $ch = curl_init();
+    
+    // Mengatur opsi cURL
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1); // Mengikuti redirect jika ada
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'); // Mengatur user agent
+    
+    // Mendapatkan HTML dari halaman
+    $html = curl_exec($ch);
+    
+    // Memeriksa error
+    if(curl_errno($ch)) {
+        echo 'Error:' . curl_error($ch);
+    }
+    
+    curl_close($ch);
+    
+    return $html;
+}
+
+// Fungsi untuk mengambil semua link dari halaman
+function getLinks($html) {
+    $links = [];
+    
+    // Memuat HTML menggunakan DOMDocument
+    $dom = new DOMDocument();
+    @$dom->loadHTML($html);  // Menggunakan @ untuk menanggulangi peringatan yang muncul dari HTML yang tidak valid
+
+    // Mengambil semua elemen <a> dan ekstrak linknya
+    $anchors = $dom->getElementsByTagName('a');
+    foreach ($anchors as $anchor) {
+        $link = $anchor->getAttribute('href');
+        if (!empty($link)) {
+            // Mengabaikan link yang hanya hash (#) atau link yang sudah dilalui
+            if (strpos($link, '#') === false && !in_array($link, $links)) {
+                $links[] = $link;
+            }
+        }
+    }
+
+    return $links;
+}
+
+// Fungsi utama untuk mulai crawling
+function startCrawl($url, $max_depth = 3) {
+    $visited = [];
+    $queue = [ $url ];
+    $depth = 0;
+    
+    while (!empty($queue) && $depth < $max_depth) {
+        $current_url = array_shift($queue);
+        if (!in_array($current_url, $visited)) {
+            echo "Crawling: $current_url\n";
+            $visited[] = $current_url;
+
+            // Mendapatkan HTML dari URL
+            $html = crawl($current_url);
+            $links = getLinks($html);
+
+            // Menambah link yang ditemukan ke dalam antrian untuk diproses
+            foreach ($links as $link) {
+                // Menambahkan link ke queue jika belum pernah dikunjungi
+                if (!in_array($link, $visited)) {
+                    $queue[] = $link;
+                }
+            }
+        }
+        $depth++;
+    }
+}
+
+// Contoh penggunaan
+$start_url = "https://jpm.uho.ac.id/";  // Ganti dengan URL yang ingin kamu crawl
+startCrawl($start_url);
+
+?>
