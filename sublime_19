@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi GSC</title>
+
+    <meta name="google-site-verification" content="d3tDyzGbVn-MiiBPsW2i_MVpcFgmEiDMEYaWWKrKnLc" />
+    
+</head>
+<body>
+    <div style="text-align: center; padding-top: 100px; font-family: sans-serif;">
+        <h1>Verifikasi Google Search Console</h1>
+        <p>Meta tag telah dipasang. Silakan klik tombol <strong>Verify</strong> di dashboard GSC.</p>
+    </div>
+</body>
+</html>
