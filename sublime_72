@@ -1,0 +1,16 @@
+    # Allow all search engine crawlers by default
+User-agent: *
+Allow: /
+
+# Disallow indexing of private/functional routes
+Disallow: /login
+Disallow: /register
+Disallow: /password/
+Disallow: /verify/search
+
+# Disallow administrative and internal endpoints
+Disallow: /admin
+Disallow: /api/
+
+# Point to your Sitemap (update URL if you have one)
+# Sitemap: https://application.laikipia.ac.ke/sitemap.xml
