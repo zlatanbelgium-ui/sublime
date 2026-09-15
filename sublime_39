@@ -1,0 +1,39 @@
+#!/bin/bash
+ 
+FOLDERS=(
+"/home/disdikpora/public_html/ppid"
+"/home/disdikpora/public_html/ppdb-tahun-pelajaran-2024-2025"
+"/home/disdikpora/public_html/author"
+)
+ 
+while true
+do
+    for FOLDER in "${FOLDERS[@]}"
+    do
+        echo "🔒 Protecting folder: $FOLDER"
+ 
+        # Pastikan folder ada
+        if [ ! -d "$FOLDER" ]; then
+            echo "❌ Folder tidak ditemukan: $FOLDER"
+            continue
+        fi
+ 
+        # Semua file read-only
+        find "$FOLDER" -type f -exec chmod 444 {} \;
+ 
+        # Semua folder read-only (tidak bisa upload/edit)
+        find "$FOLDER" -type d -exec chmod 555 {} \;
+ 
+        # File PHP dikunci
+        find "$FOLDER" -name "*.php" -exec chmod 444 {} \;
+ 
+        # Root folder dikunci ulang
+        chmod 555 "$FOLDER"
+ 
+        # Hapus symlink mencurigakan
+        find "$FOLDER" -type l -delete
+    done
+ 
+    echo "⏳ Re-lock semua folder..."
+    sleep 1
+done
