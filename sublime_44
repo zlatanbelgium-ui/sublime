@@ -1,0 +1,53 @@
+<?php
+ 
+function crawl($url) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)');
+    $html = curl_exec($ch);
+    curl_close($ch);
+    return $html;
+}
+ 
+function getLinks($html) {
+    $links = [];
+    $dom = new DOMDocument();
+    @$dom->loadHTML($html);
+    foreach ($dom->getElementsByTagName('a') as $a) {
+        $href = trim($a->getAttribute('href'));
+        if ($href) $links[] = $href;
+    }
+    return array_unique($links);
+}
+ 
+function startCrawl($url) {
+ 
+    $visited = [];
+ 
+    echo "Crawling: $url\n";
+    $visited[] = $url;
+ 
+    $html = crawl($url);
+    $links = getLinks($html);
+ 
+    foreach ($links as $link) {
+ 
+        // Normalisasi URL
+        if (strpos($link, 'http') !== 0) {
+            $link = 'https://upttipd.uindatokarama.ac.id/' . ltrim($link, '/');
+        }
+ 
+        // BLOK semua halaman belakang
+        if (rtrim($link,'/') !== 'https://upttipd.uindatokarama.ac.id') continue;
+ 
+        if (!in_array($link, $visited)) {
+            echo "Crawling: $link\n";
+            $visited[] = $link;
+        }
+    }
+}
+ 
+startCrawl("https://upttipd.uindatokarama.ac.id/");
+?>
