@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Satu Gambar</title>
+  <style>
+    body {
+      margin: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('https://zaez.online/xzy/duck%20u.jpg') no-repeat center center;
+      background-size: cover;
+    }
+  </style>
+</head>
+<body></body>
+</html>
